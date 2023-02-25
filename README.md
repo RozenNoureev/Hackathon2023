@@ -1,3 +1,4 @@
+
 # Covid inc.
 
 This Website creates a simulation of the spread of covid throughout the world.
