@@ -41,11 +41,105 @@ async function format(){
 
 
 format();
-ReactDOM.render(
+// ReactDOM.render(
 
-  <Globe
-    globeImageUrl="//unpkg.com/three-globe/example/img/earth-day.jpg"
+//   <Globe
+//     globeImageUrl="//unpkg.com/three-globe/example/img/earth-day.jpg"
     
-  />,
-  document.getElementById('globeViz')
-);
+//   />,
+//   document.getElementById('globeViz')
+// );
+
+
+
+////////////////////////////////////////////////////////////
+// const { useState, useEffect } = React;
+
+//   const World = () => {
+//     const [countries, setCountries] = useState({ features: []});
+
+//     useEffect(() => {
+//       // load data
+//       fetch('./countryData.geojson').then(res => res.json()).then(setCountries);
+//     }, []);
+
+//     return <Globe
+//       globeImageUrl="//unpkg.com/three-globe/example/img/earth-dark.jpg"
+
+//       hexPolygonsData={countries.features}
+//       hexPolygonResolution={3}
+//       hexPolygonMargin={0.0}
+//       hexPolygonColor={() => `#${Math.round(Math.random() * Math.pow(2, 24)).toString(16).padStart(6, '0')}`}
+//       hexPolygonLabel={({ properties: d }) => `
+//         <b>${d.ADMIN} (${d.ISO_A2})</b> <br />
+//         Population: <i>${d.POP_EST}</i>
+//       `}
+//     />;
+//   };
+
+//   ReactDOM.render(
+//     <World />,
+//     document.getElementById('globeViz')
+//   );
+
+
+/////////////////////////////////////////////////////////////////
+const { useState, useEffect, useRef } = React;
+
+  const World = () => {
+    const globeEl = useRef();
+    const [countries, setCountries] = useState({ features: []});
+    const [altitude, setAltitude] = useState(0.1);
+    const [transitionDuration, setTransitionDuration] = useState(1000);
+
+    useEffect(() => {
+      // load data
+      fetch('./countryData.geojson').then(res => res.json())
+        .then(countries=> {
+          setCountries(countries);
+
+          setTimeout(() => {
+            setTransitionDuration(1000);
+            setAltitude(() => feat => Math.max(0.1, Math.sqrt(+feat.properties.POP_EST) * 7e-6));
+          }, 3000);
+        });
+    }, []);
+
+    useEffect(() => {
+      // Auto-rotate
+      globeEl.current.controls().autoRotate = true;
+      globeEl.current.controls().autoRotateSpeed = 0.3;
+
+      globeEl.current.pointOfView({ altitude: 4 }, 5000);
+    }, []);
+
+    return <Globe
+      ref={globeEl}
+      globeImageUrl="//unpkg.com/three-globe/example/img/earth-day.jpg"
+
+      hexPolygonsData={countries.features}
+      hexPolygonResolution={3}
+      hexPolygonMargin={0.05}
+      hexPolygonAltitude ={altitude}
+      hexPolygonColor={() => `#${Math.round(Math.random() * Math.pow(2, 24)).toString(16).padStart(6, '0')}`}
+      hexPolygonLabel={({ properties: d }) => `
+        <b>${d.ADMIN} (${d.ISO_A2})</b> <br />
+        Population: <i>${d.POP_EST}</i>
+       `}
+
+      // polygonsData={countries.features.filter(d => d.properties.ISO_A2 !== 'AQ')}
+      // polygonAltitude={altitude}
+      // polygonCapColor={() => 'rgba(200, 0, 0, 0.7)'}
+      // polygonSideColor={() => 'rgba(255, 255, 255, 0.12)'}
+      // polygonLabel={({ properties: d }) => `
+      //   <b>${d.ADMIN} (${d.ISO_A2})</b> <br />
+      //   Population: <i>${Math.round(+d.POP_EST / 1e4) / 1e2}M</i>
+      // `}
+      //polygonsTransitionDuration={transitionDuration}
+    />; 
+  };
+
+  ReactDOM.render(
+    <World />,
+    document.getElementById('globeViz')
+  );
