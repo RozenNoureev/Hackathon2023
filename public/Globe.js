@@ -10,7 +10,10 @@ let promise = new Promise(function(resolve, reject){
   })
 })
 
-
+var play = false;
+function togglePlay() {
+  play = !play;
+}
 
 async function format(){
   let result = await promise;
@@ -23,8 +26,7 @@ async function format(){
 //   size: Math.random() / 3,
 //   color: ['purple', 'white', 'blue', 'green'][Math.round(Math.random() * 3)]
 // }));
-  setInterval(function () {
-    
+  setTimeout(function () {
     let arr = rows[day].split(",");
     for(let i=0; i < arr.length; i+=3){
       dict[arr[i]] = arr[i+1];
@@ -99,6 +101,10 @@ const { useState, useEffect, useRef } = React;
     const [altitude, setAltitude] = useState(0.1);
     const [transitionDuration, setTransitionDuration] = useState(1000);
 
+    console.log(Object.keys(dict).length);
+    for (const key of Object.keys(dict)) {
+      console.log(key + ":" + dict[key])
+    }
     useEffect(() => {
       // load data
       fetch('./countryData.geojson').then(res => res.json())
@@ -114,10 +120,32 @@ const { useState, useEffect, useRef } = React;
           setTimeout(() => {
             setTransitionDuration(1000);
             //setAltitude(() => feat => Math.max(0.1, Math.sqrt(+feat.properties.POP_EST) * 7e-6));
-            setAltitude(() => feat => {
-              console.log(countries.toString())
-              Math.max(0.1, dict[countries.features.properties.NAME]*7e-6)
-            });
+            setAltitude(() => feat => Math.min(Math.max(0.1, Math.log(dict[feat.properties.GEOUNIT])*7e-2/3), 0.5));
+            
+            
+       //     setAltitude(() => feat => {
+              //console.log(feat.properties.BRK_NAME)
+       //       console.log(feat.properties.GEOUNIT)
+       //       console.log(dict[feat.properties.GEOUNIT]*7e-4)
+              //console.log(feat.properties.NAME)
+              //console.log(feat.properties.NAME_CIAWF)
+              //console.log(feat.properties.NAME_LONG)
+              //console.log(feat.properties.NAME_SORT)
+              //console.log(feat.properties.SOVEREIGT)
+              //console.log(feat.properties.SUBUNIT)
+              /*
+               * BRK_NAME
+               * GEOUNIT
+               * NAME
+               * NAME_CIAWF
+               * NAME_LONG
+               * NAME_SORT
+               * SOVEREIGT
+               * SUBUNIT
+              */
+      //        Math.max(0.1, dict[feat.properties.GEOUNIT]*7e-4)
+      //      });
+            
             //setAltitude(dict[countries.features[0].properties.NAME][0])
           }, 3000);
         });
