@@ -120,7 +120,7 @@ const { useState, useEffect, useRef } = React;
           setTimeout(() => {
             setTransitionDuration(1000);
             //setAltitude(() => feat => Math.max(0.1, Math.sqrt(+feat.properties.POP_EST) * 7e-6));
-            setAltitude(() => feat => Math.min(Math.max(0.1, Math.log(dict[feat.properties.GEOUNIT])*7e-2/3), 0.5));
+            setAltitude(() => feat => Math.min(Math.max(0.1, Math.log(dict[feat.properties.GEOUNIT])*7e-2/6), 0.5));
             
             
        //     setAltitude(() => feat => {
@@ -147,7 +147,7 @@ const { useState, useEffect, useRef } = React;
       //      });
             
             //setAltitude(dict[countries.features[0].properties.NAME][0])
-          }, 3000);
+          }, 1000);
         });
     }, []);
 
@@ -173,11 +173,11 @@ const { useState, useEffect, useRef } = React;
       hexPolygonResolution={3}
       hexPolygonMargin={0.05}
       hexPolygonAltitude ={altitude}
-    //  onHexPolygonHover
+
       hexPolygonColor={() => `#${Math.round(Math.random() * Math.pow(2, 24)).toString(16).padStart(6, '0')}`}
       hexPolygonLabel={({ properties: d }) => `
         <b>${d.ADMIN} (${d.ISO_A2})</b> <br />
-        Infected: <i>${dict[countries.features[0].properties.NAME]}</i>
+        Infected: <i>${parseInt(dict[d.GEOUNIT])}</i>
        `}
 
       // polygonsData={countries.features.filter(d => d.properties.ISO_A2 !== 'AQ')}
