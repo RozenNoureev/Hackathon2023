@@ -7,3 +7,4 @@ This Website creates a simulation of the spread of covid throughout the world.
 
 - [Data](https://covid19.who.int/data): covid19.who.int/data
 - [React globe](https://react-globe.netlify.app/props#component): react-globe.netlify.app/props#component
+- Chat gpt - idea and debugging help.
