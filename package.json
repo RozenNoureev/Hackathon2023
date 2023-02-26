@@ -1,5 +1,6 @@
 {
   "name": "hackathon2023",
+  "homepage": "https://rozennoureev.github.io/Hackathon2023/public",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
